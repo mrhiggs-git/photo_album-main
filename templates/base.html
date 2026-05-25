@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhotoGallery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Global style to fix Django's default form rendering */
+        .django-form input, .django-form textarea, .django-form select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            margin-top: 0.25rem;
+            margin-bottom: 1rem;
+        }
+        .django-form label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        .django-form input[type="checkbox"] {
+            width: auto;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{% url 'album-list' %}" class="text-2xl font-bold text-indigo-600 tracking-tight">LensFlow</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'album-create' %}" class="hidden sm:block text-sm font-medium text-gray-600 hover:text-indigo-600 transition">Create Album</a>
+                        <div class="h-8 w-px bg-gray-200 hidden sm:block"></div>
+                        <form action="{% url 'logout' %}" method="post" class="inline-flex items-center">
+                            {% csrf_token %}
+                            <button type="submit" class="text-sm font-medium text-red-500 hover:text-red-700">Logout</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-sm font-medium text-gray-700 hover:text-indigo-600">Login</a>
+                        <a href="{% url 'register' %}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-4 p-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="mt-auto py-8 text-center text-gray-400 text-sm">
+        &copy; {% now "Y" %} LensFlow. All rights reserved.
+    </footer>
+</body>
+</html>

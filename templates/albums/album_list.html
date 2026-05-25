@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-900">My Collections</h1>
+        <p class="text-gray-500 mt-1">Manage and share your favorite moments.</p>
+    </div>
+    <a href="{% url 'album-create' %}" class="inline-flex items-center bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-sm hover:bg-indigo-700 transition-all">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        New Album
+    </a>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    {% for album in albums %}
+    <div class="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+        <a href="{% url 'album-detail' album.pk %}" class="block aspect-[4/3] bg-gray-200 relative overflow-hidden">
+            {% with cover=album.get_cover_photo %}
+                {% if cover %}
+                    <img src="{{ cover.image.url }}" alt="{{ album.title }}" class="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700">
+                {% else %}
+                    <div class="flex items-center justify-center h-full bg-gray-100 text-gray-400 font-medium italic">Empty Collection</div>
+                {% endif %}
+            {% endwith %}
+            {% if album.is_public %}
+                <span class="absolute top-4 right-4 bg-indigo-600/90 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">Public</span>
+            {% endif %}
+        </a>
+        <div class="p-5">
+            <h2 class="text-lg font-bold text-gray-800 mb-1 truncate">{{ album.title }}</h2>
+            <p class="text-gray-500 text-sm line-clamp-2 mb-4 h-10">{{ album.description|default:"No description provided." }}</p>
+            <div class="flex items-center justify-between pt-4 border-t border-gray-50 text-xs text-gray-400">
+                <span>{{ album.photos.count }} Photos</span>
+                <span>By {{ album.owner.username }}</span>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-span-full py-20 text-center bg-white rounded-2xl border-2 border-dashed border-gray-200">
+        <p class="text-gray-400">No albums found. Time to create your first collection!</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

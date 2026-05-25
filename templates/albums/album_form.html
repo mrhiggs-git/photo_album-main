@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+        <div class="p-8 border-b border-gray-50 bg-gray-50/50">
+            <h1 class="text-2xl font-bold text-gray-900">{% if form.instance.pk %}Edit Album{% else %}Create New Album{% endif %}</h1>
+            <p class="text-gray-500">Define your collection's privacy and details.</p>
+        </div>
+        <form method="post" class="p-8 django-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="mt-8 flex items-center justify-end gap-4">
+                <a href="{% url 'album-list' %}" class="text-sm font-semibold text-gray-500 hover:text-gray-700">Cancel</a>
+                <button type="submit" class="bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition">
+                    Save Album
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
